@@ -1,0 +1,24 @@
+Parts List
+
+- Adafruit ESP32-S3 Reverse TFT Feather - 4MB Flash, 2MB PSRAM, STEMMA QT
+    - https://www.adafruit.com/product/5691
+    - ESP32-S3 with built-in 240x135 color TFT display and Qwiic/Stemma (I2C) connector
+    - $24.95
+- Adafruit SGP30 Air Quality Sensor Breakout - VOC and eCO2 - STEMMA QT / Qwiic
+    - https://www.adafruit.com/product/3709
+    - You'll want to calibrate this for best results (see sample code)
+    - $17.50
+- Lithium Ion Polymer Battery - 3.7v 500mAh
+    - https://www.adafruit.com/product/1578
+    - $7.95
+- STEMMA QT / Qwiic JST SH 4-Pin Cable - 200mm Long
+    - https://www.adafruit.com/product/4401
+    - $1.25
+- Black Nylon Machine Screw and Stand-off Set – M2.5 Thread
+    - https://www.adafruit.com/product/3299
+    - More than you'll need until you buy them again
+    - $16.95
+- Breadboard-friendly SPDT Slide Switch
+    - https://www.adafruit.com/product/805
+    - This should fit snugly in the 3d printed case.
+    - $0.95
