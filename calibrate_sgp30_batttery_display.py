@@ -1,3 +1,19 @@
+# Use CircuitPython https://circuitpython.org/ to:
+# read CO2 ppm and TVOC ppb baseline values from an SGP30 sensor,
+# post them to the Cloud, and display them on screen.
+#
+# Calibrating this sgp30 is required if you want accurate readings
+# See page 12 on https://cdn-learn.adafruit.com/downloads/pdf/adafruit-sgp30-gas-tvoc-eco2-mox-sensor.pdf
+# 
+# Calibration is done by letting the device run for 12 hours (some time inside, some outside),
+# then capturing baseline values.  This script displays uptime, current readings, and current baseline values,
+# and posts them to the Cloud for analysis.
+#
+# Developed for a Adafruit ESP32-S3 Reverse TFT Feather
+# https://www.adafruit.com/product/5691
+# with an Adafruit SGP30 Air Quality Sensor Breakout
+# https://www.adafruit.com/product/3709
+
 import adafruit_requests
 import time
 import os

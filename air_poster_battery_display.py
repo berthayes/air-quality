@@ -1,3 +1,12 @@
+# Use CircuitPython https://circuitpython.org/ to:
+# read CO2 ppm and TVOC ppb from a sensor, 
+# post them to the Cloud, and display them on a screen.
+#
+# Developed for a Adafruit ESP32-S3 Reverse TFT Feather
+# https://www.adafruit.com/product/5691
+# with an Adafruit SGP30 Air Quality Sensor Breakout
+# https://www.adafruit.com/product/3709
+
 import adafruit_requests
 import time
 import os
