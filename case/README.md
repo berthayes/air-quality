@@ -37,7 +37,7 @@ For designing the case for this build, I took some existing designs from the fol
 
 ![Empty Case](../images/empty_cases.jpg)
 
-This feather is built differently from other Adafruit feathers and won't fit in the standard case. This modified case includes a slightly hole for a USB cable and uses a small stand to raise the board and allow room for the connectors on its underside.
+This feather is built differently from other Adafruit feathers and won't fit in the standard case. This modified case includes a slightly higher hole for a USB cable and uses a small stand to raise the board and allow room for the connectors on its underside.
 
 ![3_case_parts](../images/3_case_parts.jpg)
 ![Feather Stand](../images/feather_stand.jpg)
