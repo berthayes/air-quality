@@ -18,6 +18,8 @@ The code was developed for and tested on an [Adafruit ESP32-S3 Reverse TFT Feath
 ### Setup
 Start with [installing Micropython](https://circuitpython.org/board/adafruit_feather_esp32s3_reverse_tft/) on the board. This will allow the board to act like a removable drive with a small filesystem. 
 
+At a minimum, plug the sensor in to the board using an I2C connector cable. If you're going all the way, print the case and [put it all together](./case/README.md).
+
 Download or clone this repository. With the board plugged in, copy the `lib/` directory and the python scripts to it:
 ```
 cd air-quality
