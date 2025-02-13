@@ -1,0 +1,379 @@
+{
+  "id": "fart_detector",
+  "conf": {
+    "output": "default",
+    "streamtags": [],
+    "groups": {},
+    "asyncFuncTimeout": 1000,
+    "functions": [
+      {
+        "filter": "true",
+        "conf": {
+          "comment": "Parse the incoming data and clean it up for processing."
+        },
+        "id": "comment"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "mode": "extract",
+          "type": "json",
+          "srcField": "_raw",
+          "fields": []
+        },
+        "id": "serde"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "fields": [
+            "data"
+          ],
+          "prefix": "",
+          "depth": 5,
+          "delimiter": "_"
+        },
+        "id": "flatten"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "wildcardDepth": 5,
+          "rename": [
+            {
+              "currentName": "data_CO2",
+              "newName": "co2_ppm"
+            },
+            {
+              "currentName": "data_TVOC",
+              "newName": "tvoc_ppb"
+            }
+          ]
+        },
+        "id": "rename",
+        "disabled": false
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "remove": [
+            "_raw",
+            "headers",
+            "host",
+            "method",
+            "path",
+            "source",
+            "cribl_breaker",
+            "records_0_key"
+          ]
+        },
+        "id": "eval",
+        "disabled": false,
+        "description": "Drop crufty fields"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "comment": "Push values to Redis and calculate average values and of last 10 readings and standard deviations."
+        },
+        "id": "comment"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "commands": [
+            {
+              "outField": "__lpush_result",
+              "command": "LPUSH",
+              "keyExpr": "'co2:ppm'",
+              "argsExpr": "co2_ppm"
+            },
+            {
+              "outField": "lrange_result",
+              "command": "LRANGE",
+              "keyExpr": "'co2:ppm'",
+              "argsExpr": "[0, 9]"
+            },
+            {
+              "outField": "last_reading",
+              "command": "LRANGE",
+              "keyExpr": "'co2:ppm'",
+              "argsExpr": "[1, 1]"
+            },
+            {
+              "outField": "__ltrim_result",
+              "command": "LTRIM",
+              "keyExpr": "'co2:ppm'",
+              "argsExpr": "[0, 10]"
+            }
+          ],
+          "deploymentType": "standalone",
+          "authType": "manual",
+          "maxBlockSecs": 60,
+          "tlsOptions": {
+            "rejectUnauthorized": true
+          },
+          "url": "'redis://redis.changeme.redns.redis-cloud.com'",
+          "username": "default",
+          "password": "changemetoo"
+        },
+        "id": "redis",
+        "disabled": false,
+        "description": "Push this event's co2_ppm to a list and retrieve the last 10 values from that list"
+      },
+      {
+        "id": "numerify",
+        "filter": "true",
+        "disabled": false,
+        "conf": {
+          "format": "none",
+          "filterExpr": "`name=='lrange_result'`",
+          "ignoreFields": [],
+          "digits": 0
+        },
+        "description": "Numerify the result of the returned Redis list"
+      },
+      {
+        "id": "flatten",
+        "filter": "true",
+        "disabled": false,
+        "conf": {
+          "fields": [
+            "lrange_result"
+          ],
+          "prefix": "",
+          "depth": 5,
+          "delimiter": "_"
+        },
+        "description": "Flatten the values returned by Redis from out of an array"
+      },
+      {
+        "id": "eval",
+        "filter": "true",
+        "disabled": false,
+        "conf": {
+          "add": [
+            {
+              "disabled": false,
+              "name": "all_readings",
+              "value": "lrange_result_0 + lrange_result_1 + lrange_result_2 + lrange_result_3 + lrange_result_4 + lrange_result_5 + lrange_result_6 + lrange_result_7 + lrange_result_8 + lrange_result_9"
+            },
+            {
+              "disabled": false,
+              "name": "avg_reading",
+              "value": "all_readings / 10"
+            },
+            {
+              "disabled": false,
+              "name": "reading_0_dev",
+              "value": "(lrange_result_0 - avg_reading) * (lrange_result_0 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_1_dev",
+              "value": "(lrange_result_1 - avg_reading) * (lrange_result_1 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_2_dev",
+              "value": "(lrange_result_2 - avg_reading) * (lrange_result_2 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_3_dev",
+              "value": "(lrange_result_3 - avg_reading) * (lrange_result_3 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_4_dev",
+              "value": "(lrange_result_4 - avg_reading) * (lrange_result_4 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_5_dev",
+              "value": "(lrange_result_5 - avg_reading) * (lrange_result_5 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_6_dev",
+              "value": "(lrange_result_6 - avg_reading) * (lrange_result_6 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_7_dev",
+              "value": "(lrange_result_7 - avg_reading) * (lrange_result_7 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_8_dev",
+              "value": "(lrange_result_8 - avg_reading) * (lrange_result_8 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "reading_9_dev",
+              "value": "(lrange_result_9 - avg_reading) * (lrange_result_9 - avg_reading)"
+            },
+            {
+              "disabled": false,
+              "name": "variance",
+              "value": "(reading_0_dev + reading_1_dev + reading_2_dev + reading_3_dev + reading_4_dev + reading_5_dev + reading_6_dev + reading_7_dev + reading_8_dev + reading_9_dev) /10"
+            },
+            {
+              "disabled": false,
+              "name": "std_dev",
+              "value": "Math.sqrt(variance)"
+            }
+          ]
+        },
+        "description": "Calculate average value and standard deviation for last 10 sensor readings"
+      },
+      {
+        "id": "serialize",
+        "filter": "true",
+        "disabled": false,
+        "conf": {
+          "type": "json",
+          "dstField": "__lrange",
+          "fields": [
+            "lrange_result*"
+          ]
+        },
+        "description": "Serialize lrange_results to hidden JSON __lrange"
+      },
+      {
+        "id": "eval",
+        "filter": "true",
+        "conf": {
+          "add": [
+            {
+              "disabled": false,
+              "name": "timestamp",
+              "value": "_time"
+            }
+          ]
+        },
+        "description": "Create a timestamp field from _time"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "remove": [
+            "reading_*",
+            "lrange_result*",
+            "_raw",
+            "headers*",
+            "method",
+            "path",
+            "host",
+            "source",
+            "clientip",
+            "records_0_key"
+          ],
+          "add": [
+            {
+              "disabled": false,
+              "name": "std_dev",
+              "value": "Math.floor(std_dev)"
+            },
+            {
+              "disabled": false,
+              "name": "variance",
+              "value": "Math.floor(variance)"
+            }
+          ]
+        },
+        "id": "eval",
+        "disabled": false,
+        "description": "Remove crufty fields"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "comment": "Detect spikes in readings - reading is more than 3 standard deviations away."
+        },
+        "id": "comment"
+      },
+      {
+        "filter": "co2_ppm > last_reading + (3 * std_dev) && co2_ppm > 1000",
+        "conf": {
+          "add": [
+            {
+              "disabled": false,
+              "name": "toots",
+              "value": "'totes'"
+            }
+          ]
+        },
+        "id": "eval",
+        "disabled": false,
+        "description": "co2 concentration jumps by 3 standard deviations"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "comment": "Clean up output and get it ready to send to NTFY.sh"
+        },
+        "id": "comment"
+      },
+      {
+        "filter": "true",
+        "conf": {
+          "type": "json",
+          "dstField": "message",
+          "fields": [
+            "avg_reading",
+            "co2_ppm",
+            "tvoc_ppb",
+            "last_reading",
+            "std_dev",
+            "toots",
+            "timestamp"
+          ]
+        },
+        "id": "serialize",
+        "disabled": false,
+        "description": "Move readings to message field"
+      },
+      {
+        "id": "eval",
+        "filter": "toots=='totes'",
+        "disabled": false,
+        "conf": {
+          "remove": [
+            "_time",
+            "all_readings",
+            "avg_reading",
+            "co2_ppm",
+            "cribl_breaker",
+            "cribl_pipe.*",
+            "last_reading",
+            "std_dev",
+            "tvoc_ppb",
+            "variance",
+            "totes"
+          ],
+          "keep": [
+            "message"
+          ]
+        },
+        "description": "Remove some crufty fields"
+      },
+      {
+        "conf": {},
+        "id": "drop",
+        "filter": "toots!='totes'",
+        "description": "Dropping non-toot data",
+        "final": true
+      },
+      {
+        "id": "chain",
+        "filter": "toots=='totes'",
+        "disabled": false,
+        "conf": {
+          "processor": "ntfy_postprocessing"
+        },
+        "description": "Prep for NTFY"
+      }
+    ]
+  }
+}

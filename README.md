@@ -8,6 +8,7 @@
  - [Calibration](https://github.com/berthayes/air-quality/#Calibration)
  - [The Calibration Code](https://github.com/berthayes/air-quality/#The-Calibration-Code)
  - [Building the Device and Case](./case/README.md)
+ - [Optional: Fart Detector (Recommended)](./fart-detector/README.md)
 
 ### Overview
 This IoT project uses [Circuitpython](https://circuitpython.org) to read Carbon Dioxide in parts per million (CO2 ppm) and Total Volatile Organic Compounds in parts per billion (TVOC ppb), send them to Cribl Cloud over an HTTP POST. Readings are shown on a cool display. 
