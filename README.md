@@ -56,7 +56,7 @@ off, baseline values are valid for a maximum of seven days.
 
 TL;DR - you need to run the calibration script for 12 hours the first time you boot the device, or the first time you run the device after it's been powered off for 7 days or longer.
 
-![Calibration Display](https://github.com/berthayes/air-quality/images/calibration.jpg)
+![Calibration Display](./images/calibration.jpg)
 
 ### The Calibration Code
 Oh look: a rabbit hole! Out of the box, the air sensor is good enough to track rising/falling trends in concentration, but to calibration is required to ensure accuracy.
