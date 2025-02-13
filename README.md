@@ -7,7 +7,7 @@
  - [The Air Poster Code](https://github.com/berthayes/air-quality/#The-Air-Poster-Code)
  - [Calibration](https://github.com/berthayes/air-quality/#Calibration)
  - [The Calibration Code](https://github.com/berthayes/air-quality/#The-Calibration-Code)
- - [Building the Device and Case](https://github.com/berthayes/air-quality/case/README.md)
+ - [Building the Device and Case](./case/README.md)
 
 ### Overview
 This IoT project uses [Circuitpython](https://circuitpython.org) to read Carbon Dioxide in parts per million (CO2 ppm) and Total Volatile Organic Compounds in parts per billion (TVOC ppb), send them to Cribl Cloud over an HTTP POST. Readings are shown on a cool display. 
@@ -59,21 +59,21 @@ TL;DR - you need to run the calibration script for 12 hours the first time you b
 ![Calibration Display](./images/calibration.jpg)
 
 ### The Calibration Code
-Oh look: a rabbit hole! Out of the box, the air sensor is good enough to track rising/falling trends in concentration, but to calibration is required to ensure accuracy.
+Oh look: a rabbit hole! Out of the box, the air sensor is good enough to track rising/falling trends in concentration, but calibration is required to ensure accuracy.
 
 The calibration script does the following:
  - At startup: 
     - Initialize the calibration routine on the sensor
     - Contact [worldtimeapi.org](https://worldtimeapi.org) to get an epoch timestamp.
- - Every 5 mintes:
-    - Get the epoch timestamp again to track uptime (sensor should run for 12 hours or 720 to fully calibrate).
+ - Every 5 minutes:
+    - Get the epoch timestamp again to track uptime (sensor should run for 12 hours or 720 minutes to fully calibrate).
     - Get baseline CO2 and TVOC values (used in calibration)
-    - Get the adjucsted CO2 and TVOC values (reported in ppm or ppb)
+    - Get the adjusted CO2 and TVOC values (reported in ppm or ppb)
     - Create a JSON object with air-quality readings, board ID, sensor ID, baseline values, boot time, and uptime. 
     - Push the JSON object to the Cloud via HTTP POST
 - Every 1 second:
     - Get baseline CO2 and TVOC values (used in calibration)
-    - Get the adjucsted CO2 and TVOC values (reported in ppm or ppb)    - 
+    - Get the adjucsted CO2 and TVOC values (reported in ppm or ppb)    
     - Update the display with new values
     - Update the display with battery status
     - Update the display with the number of seconds remaining until next HTTP POST
