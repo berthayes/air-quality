@@ -1,0 +1,11 @@
+# WiFi credentials go here
+CIRCUITPY_WIFI_SSID = "XXXXXXXXXXXXXXXXXX"
+CIRCUITPY_WIFI_PASSWORD = "XXXXXXXXXXXXXXXXXX"
+
+# Ingest address for the Cribl Raw HTTP source
+cribl_url = "http://default.main.your-cloud-org.cribl.cloud:20008"
+
+
+# sensor_id 25514
+baseline_eCO2 = 38416
+baseline_TVOC = 39396
