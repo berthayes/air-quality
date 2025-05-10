@@ -1,3 +1,12 @@
+# Use CircuitPython https://circuitpython.org/ to:
+# read CO2 ppm and TVOC ppb from a sensor, 
+# post them to the Cloud, and display them on a screen.
+#
+# Developed for a Adafruit ESP32-S3 Reverse TFT Feather
+# https://www.adafruit.com/product/5691
+# with an Adafruit SGP30 Air Quality Sensor Breakout
+# https://www.adafruit.com/product/3709
+
 import adafruit_requests
 import time
 import os
@@ -22,11 +31,6 @@ TEXT1_COLOR = 0x00FF00 # BRIGHT GREEN
 TEXT2_COLOR = 0X0095a1 # WTF
 TEXT3_COLOR = 0xFFFFFF # White
 FONTSCALE = 3
-
-# Make the display context
-display = board.DISPLAY
-splash = displayio.Group()
-display.root_group = splash
 
 # Initialize Battery Monitor
 i2c = board.I2C()
@@ -75,22 +79,22 @@ def get_time():
     time_url = "http://worldtimeapi.org/api/ip"
     results={}
     try:
-        now = requests.get(time_url)
+        print("Getting epoch time from worldtimeapi.org")
+        now = requests.get(time_url, timeout=10)
         print("get_time HTTP status: " + str(now.status_code))
         if now.status_code==200:
             nowdict = now.json()
             epoch = nowdict["unixtime"]
-            datetime = nowdict["datetime"]
         else:
             epoch = -1000000
         now.close()
         results["epoch"]=epoch
         results["status_code"]=now.status_code
-        results["datetime"]=datetime
         return(results)
     except:
-        results["epoch"]=-1000000
-        results["status_code"]="FAIL"
+        print("Getting time from worldtimeapi.org failed")
+        results["epoch"] = ""
+        results["status_code"] = "FAIL"
     return(results)
 
 def draw_black_background():
@@ -171,10 +175,13 @@ def make_labels():
     label_width = tvoc_text_width 
     return(tvoc_base_alignment, co2_base_alignment, label_width)
 
+# Make the display context
+display = board.DISPLAY
+splash = displayio.Group()
+display.root_group = splash
 
 get_time_dict = get_time()
 epoch = get_time_dict["epoch"]
-datetime = get_time_dict["datetime"]
 
 tvoc_base, co2_base, label_width = make_labels()
 
